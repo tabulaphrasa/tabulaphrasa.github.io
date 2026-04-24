@@ -23,3 +23,7 @@ pnpm-debug.log*
 *.pem
 .cache
 .astro
+
+# local Claude Code config + User-Arbeitsdateien (OPSEC)
+.claude/
+platzhalter/

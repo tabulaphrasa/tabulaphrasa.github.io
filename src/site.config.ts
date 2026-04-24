@@ -5,7 +5,7 @@ export const siteConfig: SiteConfig = {
 	url: "https://tabulaphrasa.github.io/",
 	title: "tabulaphrasa",
 	author: "tabulaphrasa",
-	description: "Blog — Platzhalter, wird spaeter angepasst.",
+	description: "die menschliche tragödie in der göttlichen komödie",
 	lang: "de-DE",
 	ogLocale: "de_DE",
 	date: {
@@ -30,7 +30,7 @@ export const menuLinks: { path: string; title: string }[] = [
 	},
 	{
 		path: "/about/",
-		title: "Mission tabulaphrasa",
+		title: "about",
 	},
 ];
 

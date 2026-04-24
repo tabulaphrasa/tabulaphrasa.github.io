@@ -1,0 +1,19 @@
+---
+import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
+import { getAllNeverending } from "@/data/neverending";
+import NeverendingEntry from "@/layouts/NeverendingEntry.astro";
+
+export const getStaticPaths = (async () => {
+	const entries = await getAllNeverending();
+	return entries.map((entry) => ({
+		params: { slug: entry.id },
+		props: { entry },
+	}));
+}) satisfies GetStaticPaths;
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const { entry } = Astro.props;
+---
+
+<NeverendingEntry entry={entry} />

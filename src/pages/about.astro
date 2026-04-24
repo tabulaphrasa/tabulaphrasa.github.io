@@ -2,35 +2,105 @@
 import PageLayout from "@/layouts/Base.astro";
 
 const meta = {
-	description: "I'm a starter theme for Astro.build",
-	title: "About",
+	description: "about tabulaphrasa",
+	title: "about",
 };
 ---
 
 <PageLayout meta={meta}>
-	<h1 class="title mb-12">About</h1>
-	<div class="prose prose-sm prose-cactus max-w-none">
+	<h1 class="title mb-12">about</h1>
+	<div class="prose prose-sm max-w-none">
+		<p class="text-accent text-xl font-semibold">no comment.</p>
+
+		<h3>Das Zitatrecht</h3>
 		<p>
-			Hi, I’m a starter Astro. I’m particularly great for getting you started with your own blogging
-			website.
+			§ 42f UrhG: Ein veröffentlichtes Werk darf zum Zweck des Zitats vervielfältigt, verbreitet,
+			durch Rundfunk gesendet, der Öffentlichkeit zur Verfügung gestellt und zu öffentlichen
+			Vorträgen, Aufführungen und Vorführungen benutzt werden, sofern die Nutzung in ihrem Umfang
+			durch den besonderen Zweck gerechtfertigt ist.
 		</p>
-		<p>Here are my some of my awesome built in features:</p>
-		<ul class="list-inside list-disc" role="list">
-			<li>I'm ultra fast as I'm a static site</li>
-			<li>I'm fully responsive</li>
-			<li>I come with a light and dark mode</li>
-			<li>I'm easy to customise and add additional content</li>
-			<li>I have Tailwind CSS styling</li>
-			<li>Shiki code syntax highlighting</li>
-			<li>Satori for auto generating OG images for blog posts</li>
-		</ul>
 		<p>
-			Clone or fork my <a
-				class="cactus-link inline-block"
-				href="https://github.com/chrismwilliams/astro-cactus"
+			<a
+				class="cactus-link"
+				href="https://www.jusline.at/gesetz/urhg/paragraf/42f"
 				rel="noreferrer"
-				target="_blank">repo</a
-			> if you like me!
+				target="_blank">jusline.at ↗</a
+			>
+		</p>
+
+		<h3>Die Pressefreiheit</h3>
+		<p>
+			Art. 13 StGG: Jedermann hat das Recht, durch Wort, Schrift, Druck oder durch bildliche
+			Darstellung seine Meinung innerhalb der gesetzlichen Schranken frei zu äußern. Die Presse
+			darf weder unter Censur gestellt, noch durch das Concessions-System beschränkt werden. Die
+			Pressefreiheit ist in Österreich als Grundrecht in der Bundesverfassung garantiert.
+		</p>
+		<p>
+			<a
+				class="cactus-link"
+				href="https://www.jusline.at/gesetz/stgg/paragraf/artikel13"
+				rel="noreferrer"
+				target="_blank">jusline.at ↗</a
+			>
+		</p>
+
+		<h3>Die Freiheit der Berichterstattung und Recherche</h3>
+		<p>
+			Die Verfassung sichert den Empfang und die Weitergabe von Informationen sowie die
+			redaktionelle Tätigkeit und die Verbreitung. Berichterstattung über Fakten, die geeignet
+			sind, zu einer Debatte in einer demokratischen Gesellschaft beizutragen, genießt besonderen
+			Schutz. Die Pressefreiheit muss gegen überproportionale Einschränkungen durch das
+			Persönlichkeitsrecht geschützt werden.
+		</p>
+		<p>
+			<a
+				class="cactus-link"
+				href="https://voez.at/politik-recht/rechtsinformationen/medien-grundrechte/"
+				rel="noreferrer"
+				target="_blank">voez.at ↗</a
+			>
+		</p>
+
+		<h3>Journalistische Sorgfalt als Schutzvoraussetzung</h3>
+		<p>
+			Berichterstattung über Begebenheiten von öffentlichem Interesse nach gründlicher Recherche
+			ist die ureigenste Aufgabe der Medien. Journalistische Sorgfalt bedeutet, dass sachgerecht
+			recherchiert wurde: Die Zuverlässigkeit von Informationsquellen ist zu prüfen,
+			Basisinformationen sind zu verifizieren. Den von der Berichterstattung betroffenen Personen
+			ist Gelegenheit zur Stellungnahme zu geben. Der verantwortliche Journalist muss überzeugt
+			sein, dass die behaupteten Tatsachen wahr sind.
+		</p>
+		<p>
+			<a
+				class="cactus-link"
+				href="https://voez.at/politik-recht/rechtsinformationen/medienprivilegien/"
+				rel="noreferrer"
+				target="_blank">voez.at ↗</a
+			>
+		</p>
+
+		<h3>Das Medienrecht und der Website-Medieninhaber</h3>
+		<p>
+			Das MedienG legt in § 1 die wesentlichen Termini fest, darunter das „Medium", das
+			„Medienunternehmen" und den „Medieninhaber", gegen den insbesondere nach den Bestimmungen
+			über den Persönlichkeitsschutz (§§ 6 ff MedienG) Ansprüche wegen Verletzung näher
+			bestimmter Rechtsgüter geltend gemacht werden können. Blogger, die eigene redaktionelle
+			Inhalte veröffentlichen, fallen unter die Regelungen des MedienG und sind für ihre
+			Publikationen vollständig verantwortlich, nicht unter das Haftungsprivileg des ECG.
+		</p>
+		<p>
+			<a
+				class="cactus-link"
+				href="https://www.ris.bka.gv.at/GeltendeFassung.wxe?Abfrage=Bundesnormen&Gesetzesnummer=10001870"
+				rel="noreferrer"
+				target="_blank">ris.bka.gv.at ↗</a
+			>
+		</p>
+
+		<hr />
+
+		<p>
+			<a class="cactus-link" href="/another-story/">another story →</a>
 		</p>
 	</div>
 </PageLayout>

@@ -1,0 +1,80 @@
+---
+import type { CollectionEntry } from "astro:content";
+import type { GetStaticPaths, Page } from "astro";
+import FormattedDate from "@/components/FormattedDate.astro";
+import Pagination from "@/components/Paginator.astro";
+import { getAllNeverending, groupNeverendingByYear } from "@/data/neverending";
+import PageLayout from "@/layouts/Base.astro";
+import { collectionDateSort } from "@/utils/date";
+
+export const getStaticPaths = (async ({ paginate }) => {
+	const MAX_PER_PAGE = 10;
+	const allEntries = await getAllNeverending();
+	const allEntriesByDate = allEntries.sort(collectionDateSort);
+	return paginate(allEntriesByDate, {
+		pageSize: MAX_PER_PAGE,
+	});
+}) satisfies GetStaticPaths;
+
+interface Props {
+	page: Page<CollectionEntry<"neverending">>;
+}
+
+const { page } = Astro.props;
+
+const meta = {
+	description: "another story — fortlaufende Notizen.",
+	title: "another story",
+};
+
+const paginationProps = {
+	...(page.url.prev && {
+		prevUrl: {
+			text: "← vorige seite",
+			url: page.url.prev,
+		},
+	}),
+	...(page.url.next && {
+		nextUrl: {
+			text: "nächste seite →",
+			url: page.url.next,
+		},
+	}),
+};
+
+const groupedByYear = groupNeverendingByYear(page.data);
+const descYearKeys = Object.keys(groupedByYear).sort((a, b) => +b - +a);
+---
+
+<PageLayout meta={meta}>
+	<h1 class="title mb-12">another story</h1>
+	<div>
+		{
+			descYearKeys.map((yearKey) => (
+				<section class="mb-16">
+					<h2 id={`year-${yearKey}`} class="title text-lg">
+						<span class="sr-only">Beitraege aus</span>
+						{yearKey}
+					</h2>
+					<ul class="mt-5 space-y-4 text-start">
+						{groupedByYear[yearKey]?.map((entry) => (
+							<li class="grid gap-1 sm:grid-cols-[auto_1fr] sm:[&_q]:col-start-2">
+								<FormattedDate
+									class="text-muted min-w-30 font-semibold"
+									date={entry.data.publishDate}
+								/>
+								<div>
+									<a class="cactus-link" href={`/another-story/${entry.id}/`}>
+										{entry.data.title}
+									</a>
+									<q class="mt-1 line-clamp-3 italic block">{entry.data.description}</q>
+								</div>
+							</li>
+						))}
+					</ul>
+				</section>
+			))
+		}
+		<Pagination {...paginationProps} />
+	</div>
+</PageLayout>

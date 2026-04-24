@@ -38,13 +38,18 @@ const post = defineCollection({
 		}),
 });
 
-const note = defineCollection({
-	loader: glob({ base: "./src/content/note", pattern: "**/*.{md,mdx}" }),
+const neverending = defineCollection({
+	loader: glob({ base: "./src/content/neverending", pattern: "**/*.{md,mdx}" }),
 	schema: baseSchema.extend({
-		description: z.string().optional(),
-		publishDate: z.iso
-			.datetime({ offset: true }) // Ensures ISO 8601 format with offsets allowed (e.g. "2024-01-01T00:00:00Z" and "2024-01-01T00:00:00+02:00")
+		description: z.string(),
+		publishDate: z
+			.string()
+			.or(z.date())
 			.transform((val) => new Date(val)),
+		updatedDate: z
+			.string()
+			.optional()
+			.transform((str) => (str ? new Date(str) : undefined)),
 	}),
 });
 
@@ -56,4 +61,4 @@ const tag = defineCollection({
 	}),
 });
 
-export const collections = { post, note, tag };
+export const collections = { post, tag, neverending };
