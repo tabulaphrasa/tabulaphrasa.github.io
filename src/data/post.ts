@@ -1,10 +1,24 @@
 import { type CollectionEntry, getCollection } from "astro:content";
+import { collectionDateSort } from "@/utils/date";
 
 /** filter out draft posts based on the environment */
 export async function getAllPosts(): Promise<CollectionEntry<"post">[]> {
 	return await getCollection("post", ({ data }) => {
 		return import.meta.env.PROD ? !data.draft : true;
 	});
+}
+
+/** root posts = posts without parent */
+export async function getRootPosts(): Promise<CollectionEntry<"post">[]> {
+	const all = await getAllPosts();
+	const ids = new Set(all.map((p) => p.id));
+	return all.filter((p) => !p.data.parent || !ids.has(p.data.parent));
+}
+
+/** direct children of a post (1 level) */
+export async function getChildPosts(parentId: string): Promise<CollectionEntry<"post">[]> {
+	const all = await getAllPosts();
+	return all.filter((p) => p.data.parent === parentId).sort(collectionDateSort);
 }
 
 /** Get tag metadata by tag name */

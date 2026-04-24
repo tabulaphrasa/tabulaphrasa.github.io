@@ -35,6 +35,7 @@ const post = defineCollection({
 				.optional()
 				.transform((str) => (str ? new Date(str) : undefined)),
 			pinned: z.boolean().default(false),
+			parent: z.string().optional(),
 		}),
 });
 
@@ -50,6 +51,7 @@ const neverending = defineCollection({
 			.string()
 			.optional()
 			.transform((str) => (str ? new Date(str) : undefined)),
+		parent: z.string().optional(),
 	}),
 });
 

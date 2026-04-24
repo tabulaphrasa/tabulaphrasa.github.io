@@ -1,6 +1,8 @@
 ---
 import { type CollectionEntry, render } from "astro:content";
 import FormattedDate from "@/components/FormattedDate.astro";
+import NeverendingThread from "@/components/blog/NeverendingThread.astro";
+import { getChildNeverending } from "@/data/neverending";
 import BaseLayout from "./Base.astro";
 
 interface Props {
@@ -8,9 +10,22 @@ interface Props {
 }
 
 const { entry } = Astro.props;
-const { title, description, publishDate, updatedDate } = entry.data;
+const { title, description, publishDate, updatedDate, parent } = entry.data;
 const articleDate = (updatedDate ?? publishDate).toISOString();
 const { Content } = await render(entry);
+const childEntries = await getChildNeverending(entry.id);
+
+let prevSibling: CollectionEntry<"neverending"> | null = null;
+let nextSibling: CollectionEntry<"neverending"> | null = null;
+if (parent) {
+	const siblings = await getChildNeverending(parent);
+	const siblingsAsc = [...siblings].sort(
+		(a, b) => a.data.publishDate.getTime() - b.data.publishDate.getTime(),
+	);
+	const idx = siblingsAsc.findIndex((s) => s.id === entry.id);
+	prevSibling = idx > 0 ? siblingsAsc[idx - 1] ?? null : null;
+	nextSibling = idx >= 0 && idx < siblingsAsc.length - 1 ? siblingsAsc[idx + 1] ?? null : null;
+}
 
 const dateTimeOptions: Intl.DateTimeFormatOptions = {
 	month: "long",
@@ -44,5 +59,33 @@ const dateTimeOptions: Intl.DateTimeFormatOptions = {
 		<div class="prose prose-sm prose-headings:font-semibold prose-headings:text-accent-2">
 			<Content />
 		</div>
+		{
+			childEntries.length > 0 && (
+				<aside class="mt-16">
+					<h2 class="title mb-4 text-lg">folge-beiträge</h2>
+					<NeverendingThread entries={childEntries} />
+				</aside>
+			)
+		}
+		{
+			(prevSibling || nextSibling) && (
+				<nav class="mt-16 flex justify-between gap-4 border-t border-muted/30 pt-6 text-sm">
+					<div class="flex-1">
+						{prevSibling && (
+							<a class="cactus-link" href={`/another-story/${prevSibling.id}/`}>
+								← {prevSibling.data.title}
+							</a>
+						)}
+					</div>
+					<div class="flex-1 text-right">
+						{nextSibling && (
+							<a class="cactus-link" href={`/another-story/${nextSibling.id}/`}>
+								{nextSibling.data.title} →
+							</a>
+						)}
+					</div>
+				</nav>
+			)
+		}
 	</article>
 </BaseLayout>

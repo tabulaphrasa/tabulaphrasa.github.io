@@ -2,8 +2,10 @@
 import { type CollectionEntry, render } from "astro:content";
 
 import Masthead from "@/components/blog/Masthead.astro";
+import PostThread from "@/components/blog/PostThread.astro";
 import TOC from "@/components/blog/TOC.astro";
 import WebMentions from "@/components/blog/webmentions/index.astro";
+import { getChildPosts } from "@/data/post";
 
 import BaseLayout from "./Base.astro";
 
@@ -12,11 +14,24 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const { ogImage, title, description, updatedDate, publishDate } = post.data;
+const { ogImage, title, description, updatedDate, publishDate, parent } = post.data;
 const socialImage = ogImage ?? `/og-image/${post.id}.png`;
 const articleDate = updatedDate?.toISOString() ?? publishDate.toISOString();
 const { headings, remarkPluginFrontmatter } = await render(post);
 const readingTime: string = remarkPluginFrontmatter.readingTime;
+const childPosts = await getChildPosts(post.id);
+
+let prevSibling: CollectionEntry<"post"> | null = null;
+let nextSibling: CollectionEntry<"post"> | null = null;
+if (parent) {
+	const siblings = await getChildPosts(parent);
+	const siblingsAsc = [...siblings].sort(
+		(a, b) => a.data.publishDate.getTime() - b.data.publishDate.getTime(),
+	);
+	const idx = siblingsAsc.findIndex((s) => s.id === post.id);
+	prevSibling = idx > 0 ? siblingsAsc[idx - 1] ?? null : null;
+	nextSibling = idx >= 0 && idx < siblingsAsc.length - 1 ? siblingsAsc[idx + 1] ?? null : null;
+}
 ---
 
 <BaseLayout
@@ -38,6 +53,34 @@ const readingTime: string = remarkPluginFrontmatter.readingTime;
 				<WebMentions />
 			</div>
 		</div>
+		{
+			childPosts.length > 0 && (
+				<aside class="mt-16">
+					<h2 class="title mb-4 text-lg">folge-beiträge</h2>
+					<PostThread posts={childPosts} />
+				</aside>
+			)
+		}
+		{
+			(prevSibling || nextSibling) && (
+				<nav class="mt-16 flex justify-between gap-4 border-t border-muted/30 pt-6 text-sm">
+					<div class="flex-1">
+						{prevSibling && (
+							<a class="cactus-link" href={`/posts/${prevSibling.id}/`}>
+								← {prevSibling.data.title}
+							</a>
+						)}
+					</div>
+					<div class="flex-1 text-right">
+						{nextSibling && (
+							<a class="cactus-link" href={`/posts/${nextSibling.id}/`}>
+								{nextSibling.data.title} →
+							</a>
+						)}
+					</div>
+				</nav>
+			)
+		}
 	</article>
 	<button
 		class="hover:border-link fixed end-4 bottom-8 z-90 flex h-10 w-10 translate-y-28 cursor-pointer items-center justify-center rounded-full border-2 border-transparent bg-zinc-200 text-3xl opacity-0 transition-all transition-discrete duration-300 data-[show=true]:translate-y-0 data-[show=true]:opacity-100 sm:end-8 sm:h-12 sm:w-12 dark:bg-zinc-700"

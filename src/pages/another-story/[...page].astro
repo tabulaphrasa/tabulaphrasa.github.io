@@ -1,17 +1,17 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import type { GetStaticPaths, Page } from "astro";
-import FormattedDate from "@/components/FormattedDate.astro";
+import NeverendingTreeBranch from "@/components/blog/NeverendingTreeBranch.astro";
 import Pagination from "@/components/Paginator.astro";
-import { getAllNeverending, groupNeverendingByYear } from "@/data/neverending";
+import { getRootNeverending, groupNeverendingByYear } from "@/data/neverending";
 import PageLayout from "@/layouts/Base.astro";
 import { collectionDateSort } from "@/utils/date";
 
 export const getStaticPaths = (async ({ paginate }) => {
 	const MAX_PER_PAGE = 10;
-	const allEntries = await getAllNeverending();
-	const allEntriesByDate = allEntries.sort(collectionDateSort);
-	return paginate(allEntriesByDate, {
+	const rootEntries = await getRootNeverending();
+	const rootsByDate = rootEntries.sort(collectionDateSort);
+	return paginate(rootsByDate, {
 		pageSize: MAX_PER_PAGE,
 	});
 }) satisfies GetStaticPaths;
@@ -58,18 +58,7 @@ const descYearKeys = Object.keys(groupedByYear).sort((a, b) => +b - +a);
 					</h2>
 					<ul class="mt-5 space-y-4 text-start">
 						{groupedByYear[yearKey]?.map((entry) => (
-							<li class="grid gap-1 sm:grid-cols-[auto_1fr] sm:[&_q]:col-start-2">
-								<FormattedDate
-									class="text-muted min-w-30 font-semibold"
-									date={entry.data.publishDate}
-								/>
-								<div>
-									<a class="cactus-link" href={`/another-story/${entry.id}/`}>
-										{entry.data.title}
-									</a>
-									<q class="mt-1 line-clamp-3 italic block">{entry.data.description}</q>
-								</div>
-							</li>
+							<NeverendingTreeBranch entry={entry} />
 						))}
 					</ul>
 				</section>

@@ -1,13 +1,13 @@
 ---
 import { type CollectionEntry } from "astro:content";
 import PostCard from "@/components/blog/PostCard.astro";
-import { getAllPosts } from "@/data/post";
+import { getRootPosts } from "@/data/post";
 import PageLayout from "@/layouts/Base.astro";
 import { collectionDateSort } from "@/utils/date";
 
 const MAX_POSTS = 20;
-const allPosts = await getAllPosts();
-const allPostsByDate = allPosts.sort(collectionDateSort) as CollectionEntry<"post">[];
+const rootPosts = await getRootPosts();
+const allPostsByDate = rootPosts.sort(collectionDateSort) as CollectionEntry<"post">[];
 const latestPosts = allPostsByDate.slice(0, MAX_POSTS);
 ---
 

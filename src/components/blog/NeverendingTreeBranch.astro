@@ -1,0 +1,41 @@
+---
+import type { CollectionEntry } from "astro:content";
+import FormattedDate from "@/components/FormattedDate.astro";
+import { getChildNeverending } from "@/data/neverending";
+import NeverendingTreeBranch from "./NeverendingTreeBranch.astro";
+
+interface Props {
+	entry: CollectionEntry<"neverending">;
+}
+
+const { entry } = Astro.props;
+const children = await getChildNeverending(entry.id);
+const count = children.length;
+const label = count === 1 ? "folge-beitrag" : "folge-beiträge";
+---
+
+<li class="list-none grid gap-1 sm:grid-cols-[auto_1fr] sm:[&_q]:col-start-2">
+	<FormattedDate class="text-muted min-w-30 font-semibold" date={entry.data.publishDate} />
+	<div>
+		<a class="cactus-link" href={`/another-story/${entry.id}/`}>
+			{entry.data.title}
+		</a>
+		<q class="mt-1 line-clamp-3 italic block">{entry.data.description}</q>
+	</div>
+</li>
+{
+	count > 0 && (
+		<li class="list-none">
+			<details class="thread-item ml-8">
+				<summary class="text-muted cursor-pointer text-xs">
+					{count} {label}
+				</summary>
+				<ul class="mt-2 space-y-4 border-l border-muted/30 pl-4">
+					{children.map((child) => (
+						<NeverendingTreeBranch entry={child} />
+					))}
+				</ul>
+			</details>
+		</li>
+	)
+}

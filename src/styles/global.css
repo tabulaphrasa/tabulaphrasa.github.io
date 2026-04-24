@@ -134,6 +134,41 @@
 	}
 }
 
+/* details/summary styling — fuer User-Markdown-Quellenboxen in prose */
+@layer components {
+	.prose details {
+		@apply my-4 border-l-2 border-muted/40 pl-3 text-sm;
+	}
+	.prose details > summary {
+		@apply text-accent cursor-pointer list-none font-medium;
+	}
+	.prose details > summary::-webkit-details-marker {
+		display: none;
+	}
+	.prose details > summary::before {
+		content: "▸ ";
+		@apply text-muted;
+	}
+	.prose details[open] > summary::before {
+		content: "▾ ";
+	}
+	.prose details[open] > summary {
+		@apply mb-2;
+	}
+
+	/* Thread-Items auf Post-Detail-Seiten (folge-beitraege), ausserhalb prose */
+	.thread-item > summary::-webkit-details-marker {
+		display: none;
+	}
+	.thread-item > summary::before {
+		content: "▸ ";
+		@apply text-muted;
+	}
+	.thread-item[open] > summary::before {
+		content: "▾ ";
+	}
+}
+
 @utility prose {
 	--tw-prose-body: var(--color-global-text);
 	--tw-prose-bold: var(--color-global-text);

@@ -1,0 +1,37 @@
+---
+import { render, type CollectionEntry } from "astro:content";
+import FormattedDate from "@/components/FormattedDate.astro";
+import { getChildPosts } from "@/data/post";
+import PostThread from "./PostThread.astro";
+
+interface Props {
+	posts: CollectionEntry<"post">[];
+}
+
+const { posts } = Astro.props;
+
+const entries = await Promise.all(
+	posts.map(async (post) => ({
+		post,
+		children: await getChildPosts(post.id),
+		rendered: await render(post),
+	})),
+);
+---
+
+{
+	entries.map(({ post, children, rendered: { Content } }) => (
+		<details class="thread-item mt-4 border-l-2 border-muted/40 pl-4">
+			<summary class="cursor-pointer list-none text-sm">
+				<span class="text-accent font-semibold">{post.data.title}</span>
+				<span class="text-muted ml-2 text-xs">
+					<FormattedDate date={post.data.publishDate} />
+				</span>
+			</summary>
+			<div class="prose prose-sm mt-3 max-w-none">
+				<Content />
+			</div>
+			{children.length > 0 && <PostThread posts={children} />}
+		</details>
+	))
+}

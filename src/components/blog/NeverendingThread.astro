@@ -1,0 +1,37 @@
+---
+import { render, type CollectionEntry } from "astro:content";
+import FormattedDate from "@/components/FormattedDate.astro";
+import { getChildNeverending } from "@/data/neverending";
+import NeverendingThread from "./NeverendingThread.astro";
+
+interface Props {
+	entries: CollectionEntry<"neverending">[];
+}
+
+const { entries } = Astro.props;
+
+const nodes = await Promise.all(
+	entries.map(async (entry) => ({
+		entry,
+		children: await getChildNeverending(entry.id),
+		rendered: await render(entry),
+	})),
+);
+---
+
+{
+	nodes.map(({ entry, children, rendered: { Content } }) => (
+		<details class="thread-item mt-4 border-l-2 border-muted/40 pl-4">
+			<summary class="cursor-pointer list-none text-sm">
+				<span class="text-accent font-semibold">{entry.data.title}</span>
+				<span class="text-muted ml-2 text-xs">
+					<FormattedDate date={entry.data.publishDate} />
+				</span>
+			</summary>
+			<div class="prose prose-sm mt-3 max-w-none">
+				<Content />
+			</div>
+			{children.length > 0 && <NeverendingThread entries={children} />}
+		</details>
+	))
+}

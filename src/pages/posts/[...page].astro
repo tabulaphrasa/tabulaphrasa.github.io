@@ -3,8 +3,9 @@ import type { CollectionEntry } from "astro:content";
 import type { GetStaticPaths, Page } from "astro";
 import { Icon } from "astro-icon/components";
 import PostPreview from "@/components/blog/PostPreview.astro";
+import PostTreeBranch from "@/components/blog/PostTreeBranch.astro";
 import Pagination from "@/components/Paginator.astro";
-import { getAllPosts, getUniqueTags, groupPostsByYear } from "@/data/post";
+import { getAllPosts, getRootPosts, getUniqueTags, groupPostsByYear } from "@/data/post";
 import PageLayout from "@/layouts/Base.astro";
 import { collectionDateSort } from "@/utils/date";
 
@@ -13,14 +14,15 @@ export const getStaticPaths = (async ({ paginate }) => {
 	const MAX_TAGS = 7;
 	const MAX_PINNED_POSTS = 3;
 	const allPosts = await getAllPosts();
-	const allPostsByDate = allPosts.sort(collectionDateSort);
+	const rootPosts = await getRootPosts();
+	const rootsByDate = rootPosts.sort(collectionDateSort);
 	const uniqueTags = getUniqueTags(allPosts).slice(0, MAX_TAGS);
-	const pinnedPosts = allPostsByDate
+	const pinnedPosts = rootsByDate
 		.values()
 		.filter((p) => p.data.pinned)
 		.take(MAX_PINNED_POSTS)
 		.toArray();
-	return paginate(allPostsByDate, {
+	return paginate(rootsByDate, {
 		pageSize: MAX_POSTS_PER_PAGE,
 		props: { uniqueTags, pinnedPosts },
 	});
@@ -91,9 +93,7 @@ const descYearKeys = Object.keys(groupedByYear).sort((a, b) => +b - +a);
 						</h2>
 						<ul class="mt-5 space-y-4 text-start">
 							{groupedByYear[yearKey]?.map((p) => (
-								<li class="grid gap-1 sm:grid-cols-[auto_1fr] sm:[&_q]:col-start-2">
-									<PostPreview post={p} />
-								</li>
+								<PostTreeBranch post={p} />
 							))}
 						</ul>
 					</section>
